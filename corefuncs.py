@@ -1,24 +1,69 @@
-import urllib.request
 import os
+import json
+import urllib.request
 from aqt import mw
 from aqt.qt import QAction, QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
+from aqt import gui_hooks
 
-def create_blank_window(title):
-    dlg = QDialog(mw)
-    dlg.setWindowTitle(title)
-    layout = QVBoxLayout()
-    layout.addWidget(QLabel("This is a blank window for '{}'.".format(title)))
-    dlg.setLayout(layout)
-    dlg.exec()
+# ----------- Configuration ----------- #
+CONFIG_FILENAME = "wallpaper_config.json"
 
-def on_edit_ui():
-    create_blank_window("Edit UI")
+# ----------- Load and Save Path ----------- #
+def get_config_path():
+    profile_folder = mw.pm.profileFolder()
+    return os.path.join(profile_folder, CONFIG_FILENAME)
 
-def on_info():
-    create_blank_window("Info")
+def save_wallpaper_path(path):
+    try:
+        with open(get_config_path(), "w") as f:
+            json.dump({"wallpaper": path}, f)
+    except Exception as e:
+        print(f"Error saving wallpaper path: {e}")
 
+def load_wallpaper_path():
+    path = get_config_path()
+    if os.path.exists(path):
+        try:
+            with open(path, "r") as f:
+                data = json.load(f)
+                return data.get("wallpaper")
+        except Exception as e:
+            print(f"Error loading wallpaper path: {e}")
+    return None
+
+# ----------- Function to Apply Wallpaper ----------- #
+def apply_stored_wallpaper():
+    path = load_wallpaper_path()
+    if path and os.path.exists(path):
+        # Convert path to URL format
+        path = path.replace("\\", "/")
+        js_code = f"""
+        var style = document.getElementById('custom-background-style');
+        if (!style) {{
+            style = document.createElement('style');
+            style.type = 'text/css';
+            style.id = 'custom-background-style';
+            document.head.appendChild(style);
+        }}
+        style.innerHTML = `
+        body {{
+            background-image: url("file:///{path}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }}`;
+        """
+        mw.web.eval(js_code)
+    else:
+        # Remove style if no wallpaper
+        js_remove = """
+        var style = document.getElementById('custom-background-style');
+        if (style) style.remove();
+        """
+        mw.web.eval(js_remove)
+
+# ----------- UI for setting wallpaper ----------- #
 def set_wallpaper():
-    # Prompt user for image URL
     dlg = QDialog(mw)
     dlg.setWindowTitle("Set Wallpaper from URL")
     layout = QVBoxLayout()
@@ -40,86 +85,56 @@ def set_wallpaper():
             QMessageBox.warning(dlg, "Error", "Please enter a URL.")
             return
         try:
-            # Download the image
             filename = os.path.join(mw.pm.profileFolder(), "wallpaper.jpg")
             urllib.request.urlretrieve(url, filename)
-            # Apply as background
-            mw.web.page().runJavaScript(f"""
-                document.body.style.backgroundImage = 'url("file:///{filename}")';
-                document.body.style.backgroundSize = 'cover';
-                document.body.style.backgroundRepeat = 'no-repeat';
-                document.body.style.backgroundPosition = 'center center';
-            """)
+            save_wallpaper_path(filename)
+            apply_stored_wallpaper()
             QMessageBox.information(dlg, "Success", "Wallpaper set successfully.")
+            dlg.accept()
         except Exception as e:
             QMessageBox.critical(dlg, "Error", str(e))
-        save_wallpaper_path(filename)
-        apply_stored_wallpaper()
-        QMessageBox.information(dlg, "Success", "Wallpaper set successfully.")
-        dlg.accept()
-
-    def on_cancel():
-        dlg.reject()
 
     btn_ok.clicked.connect(on_ok)
-    btn_cancel.clicked.connect(on_cancel)
+    btn_cancel.clicked.connect(dlg.reject)
 
     dlg.exec()
 
+# ----------- Add Settings Menu ----------- #
 def add_ui_settings():
     menu = mw.menuBar().addMenu("UI-settings")
+    # Main actions
     edit_ui_action = QAction("Edit UI", mw)
-    edit_ui_action.triggered.connect(on_edit_ui)
+    edit_ui_action.triggered.connect(lambda: create_blank_window("Edit UI"))
     info_action = QAction("Info", mw)
-    info_action.triggered.connect(on_info)
+    info_action.triggered.connect(lambda: create_blank_window("Info"))
 
-    # Create a submenu for Wallpaper options
+    # Wallpaper submenu
     wallpaper_menu = menu.addMenu("Wallpaper")
     set_bg_action = QAction("Set Wallpaper from Web", mw)
     set_bg_action.triggered.connect(set_wallpaper)
 
+    # Add actions to menu
     menu.addAction(edit_ui_action)
     menu.addAction(info_action)
     menu.addMenu(wallpaper_menu)
     wallpaper_menu.addAction(set_bg_action)
 
-def apply_stored_wallpaper():
-    path = load_wallpaper_path()
-    if path:
-        # Escape backslashes on Windows
-        path = path.replace("\\", "/")
-        js_code = f"""
-        var style = document.createElement('style');
-        style.type = 'text/css';
-        style.id = 'custom-background-style';
-        style.innerHTML = `
-        body {{
-            background-image: url("file:///{path}");
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center center;
-        }}`;
-        var existing = document.getElementById('custom-background-style');
-        if (existing) {{
-            existing.remove();
-        }}
-        document.head.appendChild(style);
-        """
-        mw.web.eval(js_code)
-        
-import os
-import json
+# ----------- Helper: Blank Window ----------- #
+def create_blank_window(title):
+    dlg = QDialog(mw)
+    dlg.setWindowTitle(title)
+    layout = QVBoxLayout()
+    layout.addWidget(QLabel(f"This is a blank window for '{title}'."))
+    dlg.setLayout(layout)
+    dlg.exec()
 
-profile_folder = mw.pm.profileFolder()  # returns a string path
-config_path = os.path.join(profile_folder, "wallpaper_config.json")
+# ----------- Initialize after main window ready ----------- #
+def on_main_window_ready():
+    add_ui_settings()
+    # Load and apply wallpaper at startup
+    apply_stored_wallpaper()
 
-def save_wallpaper_path(path):
-    with open(config_path, "w") as f:
-        json.dump({"wallpaper": path}, f)
+# ----------- Hook into main window init ----------- #
 
-def load_wallpaper_path():
-    if os.path.exists(config_path):
-        with open(config_path, "r") as f:
-            data = json.load(f)
-            return data.get("wallpaper")
-    return None
+def main():
+    gui_hooks.main_window_did_init.append(on_main_window_ready)
