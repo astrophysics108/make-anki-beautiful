@@ -1,0 +1,47 @@
+Anki 25.02.4 (a5c33ad0)  (ao)
+Python 3.9.18 Qt 6.6.2 PyQt 6.6.1
+Platform: Windows-10-10.0.26100
+
+Unknown error===Add-ons (active)===
+(add-on provided name [Add-on folder, installed at, version, is config changed])
+'' ['myaddon', 0, 'None', '']
+Anki Leaderboard - Compete with friends to boost motivation Custom by Shige ['175794613', 2025-05-14T23:23, 'None', mod]
+Ankimon by Unlucky-life ['1908235722', 2024-05-16T16:07, 'None', '']
+FSRS Helper Postpone  Advance  Load Balance  Easy Days  Disperse Siblings ['759844606', 2025-05-06T05:25, 'None', mod]
+Review Heatmap ['1771074083', 2022-06-30T02:43, 'None', '']
+
+===IDs of active AnkiWeb add-ons===
+175794613 1771074083 1908235722 759844606
+
+===Add-ons (inactive)===
+(add-on provided name [Add-on folder, installed at, version, is config changed])
+
+Anki 25.02.4 (a5c33ad0)  (ao)
+Python 3.9.18 Qt 6.6.2 PyQt 6.6.1
+Platform: Windows-10-10.0.26100
+
+When loading make-anki-beautiful:
+Traceback (most recent call last):
+  File "aqt.addons", line 250, in loadAddons
+  File "C:\Users\dsingh\AppData\Roaming\Anki2\addons21\make-anki-beautiful\__init__.py", line 3, in <module>
+    from corefuncs import *
+ModuleNotFoundError: No module named 'corefuncs'
+
+Anki 25.02.4 (a5c33ad0)  (ao)
+Python 3.9.18 Qt 6.6.2 PyQt 6.6.1
+Platform: Windows-10-10.0.26100
+
+Unknown error===Add-ons (active)===
+(add-on provided name [Add-on folder, installed at, version, is config changed])
+'' ['make-anki-beautiful', 0, 'None', '']
+Anki Leaderboard - Compete with friends to boost motivation Custom by Shige ['175794613', 2025-05-14T23:23, 'None', mod]
+Ankimon by Unlucky-life ['1908235722', 2024-05-16T16:07, 'None', '']
+FSRS Helper Postpone  Advance  Load Balance  Easy Days  Disperse Siblings ['759844606', 2025-05-06T05:25, 'None', mod]
+Review Heatmap ['1771074083', 2022-06-30T02:43, 'None', '']
+
+===IDs of active AnkiWeb add-ons===
+175794613 1771074083 1908235722 759844606
+
+===Add-ons (inactive)===
+(add-on provided name [Add-on folder, installed at, version, is config changed])
+
