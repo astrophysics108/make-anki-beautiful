@@ -44,7 +44,7 @@ def set_wallpaper():
             filename = os.path.join(mw.pm.profileFolder(), "wallpaper.jpg")
             urllib.request.urlretrieve(url, filename)
             # Apply as background
-            mw.web.page().mainFrame().runJavaScript(f"""
+            mw.web.page().runJavaScript(f"""
                 document.body.style.backgroundImage = 'url("file:///{filename}")';
                 document.body.style.backgroundSize = 'cover';
                 document.body.style.backgroundRepeat = 'no-repeat';
@@ -53,6 +53,9 @@ def set_wallpaper():
             QMessageBox.information(dlg, "Success", "Wallpaper set successfully.")
         except Exception as e:
             QMessageBox.critical(dlg, "Error", str(e))
+        save_wallpaper_path(filename)
+        apply_stored_wallpaper()
+        QMessageBox.information(dlg, "Success", "Wallpaper set successfully.")
         dlg.accept()
 
     def on_cancel():
@@ -80,3 +83,43 @@ def add_ui_settings():
     menu.addMenu(wallpaper_menu)
     wallpaper_menu.addAction(set_bg_action)
 
+def apply_stored_wallpaper():
+    path = load_wallpaper_path()
+    if path:
+        # Escape backslashes on Windows
+        path = path.replace("\\", "/")
+        js_code = f"""
+        var style = document.createElement('style');
+        style.type = 'text/css';
+        style.id = 'custom-background-style';
+        style.innerHTML = `
+        body {{
+            background-image: url("file:///{path}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }}`;
+        var existing = document.getElementById('custom-background-style');
+        if (existing) {{
+            existing.remove();
+        }}
+        document.head.appendChild(style);
+        """
+        mw.web.eval(js_code)
+        
+import os
+import json
+
+profile_folder = mw.pm.profileFolder()  # returns a string path
+config_path = os.path.join(profile_folder, "wallpaper_config.json")
+
+def save_wallpaper_path(path):
+    with open(config_path, "w") as f:
+        json.dump({"wallpaper": path}, f)
+
+def load_wallpaper_path():
+    if os.path.exists(config_path):
+        with open(config_path, "r") as f:
+            data = json.load(f)
+            return data.get("wallpaper")
+    return None
