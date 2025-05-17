@@ -15,3 +15,12 @@ def on_edit_ui():
 
 def on_info():
     create_blank_window("Info")
+
+def add_edit_ui_option():
+    action_menu = mw.menuBar().addMenu("UI-settings")
+    edit_ui_action = QAction("Edit UI", mw)
+    edit_ui_action.triggered.connect(on_edit_ui)
+    info_action = QAction("Info", mw)
+    info_action.triggered.connect(on_info)
+    action_menu.addAction(edit_ui_action)
+    action_menu.addAction(info_action)
