@@ -1,2 +1,2 @@
-from .corefuncs import *
+from .main_funcs import *
 main()
