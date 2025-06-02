@@ -84,3 +84,45 @@ Review Heatmap ['1771074083', 2022-06-30T02:43, 'None', '']
 ===Add-ons (inactive)===
 (add-on provided name [Add-on folder, installed at, version, is config changed])
 
+Anki 25.02.5 (29192d15)  (ao)
+Python 3.9.18 Qt 6.6.2 PyQt 6.6.1
+Platform: Windows-10-10.0.26100
+
+When loading make-anki-beautiful:
+Traceback (most recent call last):
+  File "aqt.addons", line 250, in loadAddons
+  File "C:\Users\dsingh\AppData\Roaming\Anki2\addons21\make-anki-beautiful\__init__.py", line 9, in <module>
+    main()
+  File "C:\Users\dsingh\AppData\Roaming\Anki2\addons21\make-anki-beautiful\__init__.py", line 7, in main
+    initui(menu)
+  File "C:\Users\dsingh\AppData\Roaming\Anki2\addons21\make-anki-beautiful\initialise_ui_components\init_ui.py", line 85, in initui
+    initwallpaper()
+  File "C:\Users\dsingh\AppData\Roaming\Anki2\addons21\make-anki-beautiful\initialise_ui_components\init_ui.py", line 48, in initwallpaper
+    config_dir = os.path.join(mw.pm.profileFolder(), "make_anki_beautiful")
+  File "aqt.profiles", line 307, in profileFolder
+  File "ntpath", line 117, in join
+  File "genericpath", line 152, in _check_arg_types
+TypeError: join() argument must be str, bytes, or os.PathLike object, not 'NoneType'
+
+Anki 25.02.5 (29192d15)  (ao)
+Python 3.9.18 Qt 6.6.2 PyQt 6.6.1
+Platform: Windows-10-10.0.26100
+
+When loading make-anki-beautiful:
+Traceback (most recent call last):
+  File "aqt.addons", line 250, in loadAddons
+  File "C:\Users\dsingh\AppData\Roaming\Anki2\addons21\make-anki-beautiful\__init__.py", line 9, in <module>
+    main()
+  File "C:\Users\dsingh\AppData\Roaming\Anki2\addons21\make-anki-beautiful\__init__.py", line 7, in main
+    initui(menu)
+  File "C:\Users\dsingh\AppData\Roaming\Anki2\addons21\make-anki-beautiful\initialise_ui_components\init_ui.py", line 86, in initui
+    initwallpaper()
+  File "C:\Users\dsingh\AppData\Roaming\Anki2\addons21\make-anki-beautiful\initialise_ui_components\init_ui.py", line 48, in initwallpaper
+    config_dir = os.path.join(mw.pm.profileFolder(), "make_anki_beautiful")
+  File "aqt.profiles", line 307, in profileFolder
+  File "ntpath", line 117, in join
+  File "genericpath", line 152, in _check_arg_types
+TypeError: join() argument must be str, bytes, or os.PathLike object, not 'NoneType'
+
+
+
