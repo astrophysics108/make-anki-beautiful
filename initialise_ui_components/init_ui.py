@@ -57,30 +57,21 @@ def set_anki_wallpaper(image_path=None):
     #image_path_fixed = image_path.replace("\\", "/")
     image_path_fixed = "https://science.nasa.gov/wp-content/uploads/2023/06/planets3x3-pluto-colormercury-axis-tilt-nolabels-1080p.00001-print.jpg"
     css = f"""
+    body {{
         background-image: url("{image_path_fixed}") !important;
         background-repeat: no-repeat;
         background-position: center;
         background-attachment: fixed;
         background-size: cover;
+        }}
     """
     return css
 
-def maybe_adjust_filename_for_2136(filename): 
-    if pointVersion() >= 36: 
-        filename = filename.lstrip("css/") 
-    return filename
 
 def inject_css(web_content, context):
     css = set_anki_wallpaper()
-    for filename in web_content.css.copy():
-        filename = maybe_adjust_filename_for_2136(filename)
-        if "deckbrowser.css" in filename:
-            web_content.head += f"<style>{css}</style>"
-
-def inject_css_into_ts_page(web, extraidek):
-    page = os.path.basename(web.page().url().path())
-    return
-
+    if hasattr(context, "title") and "deck" in context.title:
+        web_content.head += f"<style>{css}</style>"
 
 
 # add tools

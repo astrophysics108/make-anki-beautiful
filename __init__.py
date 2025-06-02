@@ -6,7 +6,6 @@ menu = mw.menuBar().addMenu("UI-settings")
 
 def main():
     gui_hooks.webview_will_set_content.append(inject_css)
-    gui_hooks.webview_will_set_content.append(inject_css_into_ts_page)
     initui(menu)
     # while True: 
     #     time.sleep(100)
