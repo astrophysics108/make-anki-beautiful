@@ -6,5 +6,4 @@ menu = mw.menuBar().addMenu("UI-settings")
 def main():
     initui(menu)
 
-if __name__ == "__main__":
-    main()
+main()
